@@ -107,9 +107,12 @@ def main():
     except Exception as e:
         logger.warning(f"Failed to set custom device: {e}")
 
+    # Ensure history directory exists
+    os.makedirs("DMs_history", exist_ok=True)
+
     # Do not proceed if login fails
     if not login_user(user):
-        logger.error("Script terminated: Unable to login to Instagram.")
+        logger.error("Script terminated: Unable to login to Instagram. Check your ENV variables on Render.")
         return
 
     user.delay_range = [5, 10] 
@@ -139,6 +142,11 @@ def main():
             time.sleep(60)
 
 if __name__ == "__main__":
-    # Start the Health Check server in a background thread for Render
-    threading.Thread(target=run_web_server, daemon=True).start()
-    main()
+    # Start the Bot in a background thread so Flask can be the main process
+    logger.info("Initializing Bot background thread...")
+    bot_thread = threading.Thread(target=main, daemon=True)
+    bot_thread.start()
+    
+    # Run the Health Check server (Main Process)
+    logger.info("Starting Health Check server...")
+    run_web_server()
