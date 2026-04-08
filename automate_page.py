@@ -7,6 +7,19 @@ import json
 import logging
 import random
 import time
+import threading
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "Bot is running! 🚀"
+
+def run_web_server():
+    # Render provides PORT environment variable
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
 
 load_dotenv() # For script to access env file
 
@@ -126,4 +139,6 @@ def main():
             time.sleep(60)
 
 if __name__ == "__main__":
+    # Start the Health Check server in a background thread for Render
+    threading.Thread(target=run_web_server, daemon=True).start()
     main()
