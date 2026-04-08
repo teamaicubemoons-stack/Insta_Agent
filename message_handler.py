@@ -73,10 +73,13 @@ def get_unread_DMs(user):
             unread_messages = [] # Current messages for current thread( chat)
 
             for message in thread.messages:
-                send_id = message.user_id
-                text = message.text
-                unread_messages.append({ send_id : text})
-                threads_dict[thread.id] = unread_messages
+                unread_messages.append({
+                    "user_id": str(message.user_id),
+                    "text": message.text,
+                    "message_id": str(message.id),
+                    "timestamp": str(message.timestamp)
+                })
+            threads_dict[thread.id] = unread_messages
         except Exception as e:
             logger.info("Couldn't process regular DMs: %s" % e)
     
@@ -86,10 +89,13 @@ def get_unread_DMs(user):
             unread_messages = [] # Current messages for current thread( chat)
 
             for message in thread.messages:
-                send_id = message.user_id
-                text = message.text
-                unread_messages.append({ send_id : text})
-                threads_dict[thread.id] = unread_messages
+                unread_messages.append({
+                    "user_id": str(message.user_id),
+                    "text": message.text,
+                    "message_id": str(message.id),
+                    "timestamp": str(message.timestamp)
+                })
+            threads_dict[thread.id] = unread_messages
         except Exception as e:
             logger.info("Couldn't process pending DMs: %s" % e)
 
@@ -107,7 +113,7 @@ def get_unread_DMs(user):
                         first_message = messages[0] 
                    
                     last_seen = old_messages.get(thread_id)
-                    sender_id = list(first_message.keys())[0]
+                    sender_id = first_message.get("user_id")
 
                     # Convert both IDs to strings for comparison
                     bot_id_str = str(bot_id)

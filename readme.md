@@ -1,63 +1,48 @@
-# Deepgram - Instagram Bot with Deepseek Chat API
+# Insta Agent - Instagram Bot with OpenAI GPT-4o-mini
 
-This project automates the process of reading Instagram DMs and generating human-like responses using the Deepseek Chat API. It is also a post scheduler for pre-made content. 
+This project automates the process of reading Instagram DMs and generating natural, human-like responses using the OpenAI GPT-4o-mini model. It also includes a scheduler for Instagram posts and stories.
+
 ## Features
 
-- **Instagram DM Processing:**  
-  Reads unread DMs from both the regular and pending inbox.
-  
-- **Deepseek Chat Integration:**  
-  Uses Deepseek Chat API to generate human-like responses based on incoming DM content.
-  
-- **Photo Posting:**  
-  Uploads photos with captions to Instagram.
-
-- **Photo Posting:**  
-  Uploads stories to Instagram.
-  
-- **Logging & Error Handling:**  
-  Detailed logging and try/except blocks to help diagnose issues and improve robustness.
-  
-- **Environment-based Configuration:**  
-  Sensitive information like API keys and login credentials are loaded from environment variables.
+- **Humanized DM Responses:** Generates conversational replies in Hinglish, Hindi, or English, matching the user's style and avoiding "robotic" language.
+- **Detailed Interaction History:** Saves every DM interaction (Message ID, User Message, AI Reply, and Timestamps) into a JSON file for easy tracking.
+- **Instagram Post/Story Scheduling:** Automatically handles uploading photos and stories with captions.
+- **Smart Filtering:** Detects new messages and ignores bot-sent messages to avoid infinite loops.
+- **Premium Messaging:** Uses emojis and proper formatting for a professional brand experience.
 
 ## Project Structure
 
-- **automate_page.py:**  
-  Main entry point for the project. Handles Instagram login, sets delays to mimic human behavior, and triggers DM processing.
+- **automate_page.py:** Main script that handles Instagram login and runs the bot loop.
+- **message_handler.py:** Manages DM checking, unread message detection, and thread processing.
+- **deepseek_api.py:** Interfaces with OpenAI to generate responses and logs conversation history to JSON.
+- **posting.py:** Handles Instagram post and story scheduling logic.
 
-- **message_handler.py:**  
-  Contains functions for saving, loading, and processing DM threads. It also calls the Deepseek API module to generate responses.
+## Setup Instructions
 
-- **deepseek_api.py:**  
-  Integrates with the Deepseek Chat API to generate responses for incoming messages. Includes logic to ignore trivial messages. Sends responses to other parties.
+1. **Install Dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-- **posting.py:**  
-  A content management system that handles Instagram post/story scheduling, prevents duplicate posts/stories, and manages image uploads with captions
+2. **Configuration:**
+   Create a `.env` file in the root directory with the following variables:
+   ```env
+   IG_USERNAME="your_username"
+   IG_PASSWORD="your_password"
+   OPENAI_API_KEY="your_openai_api_key"
+   SYSTEM_PROMPT="... (Defined in .env for personality)"
+   ```
 
-## Prerequisites
+3. **Run the Bot:**
+   ```bash
+   python automate_page.py
+   ```
 
-- **Python 3.8+**  
-- **Dependencies:**  
-  Install the required packages using:
-  ```bash
-  pip install -r requirements.txt
+## Logging & History
 
-### Environment Variables
+- **Detailed History:** `DMs_history/detailed_messages_history.json` contains a structured log of all conversations.
+- **Activity Log:** `bot_activity.log` contains technical logs of the bot's runtime activity.
 
-Create a .env file in the root directory of the project to store sensitive information. For example:
-```
-USERNAME=your_instagram_username
-PASSWORD=your_instagram_password
-DEEPSEEK_API_KEYS=your_deepseek_api_key
-```
-## Roadmap and Future Features
+## Important Note
 
-- **Flagging Important Messages:**  
-  A function to mark important messages so that they are not missed by being auto-replied to.
-
-- **Fectch Content From Email:**  
-  A system for getting, organising, and publishing content. This will allow account owners to simply email the type of content they want published and at what time. This is convenient for business owners using Instagram as a marketing tool.
-
-
-
+Ensure your `.env` and `session.json` files are never shared or pushed to public repositories to protect your account credentials.
