@@ -14,7 +14,21 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Bot is running! 🚀"
+    return "Bot is running! 🚀 <br> View logs at <a href='/logs'>/logs</a>"
+
+@app.route('/logs')
+def get_logs():
+    try:
+        if os.path.exists("bot_activity.log"):
+            with open("bot_activity.log", "r") as f:
+                content = f.read()
+                # Return last 100 lines for readability
+                lines = content.splitlines()[-100:]
+                return "<pre>" + "\n".join(lines) + "</pre>"
+        else:
+            return "Log file not found yet."
+    except Exception as e:
+        return f"Error reading logs: {e}"
 
 def run_web_server():
     # Render provides PORT environment variable
