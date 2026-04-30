@@ -11,7 +11,7 @@ import PIL.Image
 
 load_dotenv() # For script to access env file
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', 
-                    handlers=[logging.FileHandler("bot_activity.log"),
+                    handlers=[logging.FileHandler("bot_activity.log", encoding='utf-8'),
                             logging.StreamHandler()])
 logger = logging.getLogger()
 
@@ -48,6 +48,7 @@ def load_scheduled_posts():
             return posts
     except Exception as e:
        logger.info(f"Couldn't load post from JSON file: {e}")
+       return {}
 
 
 def process_posts(user):
@@ -120,6 +121,7 @@ def load_scheduled_story():
             return story_path
     except Exception as e:
         logger.info(f"Couldn't load story from TXT file: {e}")
+        return {}
 
 def process_stories(user):
     """
@@ -130,7 +132,7 @@ def process_stories(user):
         previous_stories = load_successful_story()
         today = datetime.now().strftime("%Y-%m-%d")
 
-        if today in story_path:
+        if story_path and today in story_path:
             if today not in previous_stories:  # To check if the story is already posted
                 story = {today: story_path[today]}
                 save_successful_story(story)
@@ -141,10 +143,11 @@ def process_stories(user):
                         user.delay_range = [5, 10] 
                         upload_story(user, image_path)
                         print(f"Inside Loop the image path is: {image_path}\n")
-            else:
-                logger.info(f"Skipping story: {today} because the scheduled date is not today")
+        else:
+            logger.info(f"No story scheduled for today ({today}) or file missing.")
         
-        print(f"Processing {story_path} stories and the date is: {today}")
+        if story_path:
+            print(f"Processed scheduled stories. Today is: {today}")
     except Exception as e:
         logger.info(f"Error processing stories: {e}")
 

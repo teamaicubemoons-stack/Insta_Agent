@@ -6,7 +6,7 @@ import logging
 
 load_dotenv() # For script to access env file
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s',
-                         handlers=[logging.FileHandler("bot_activity.log"),
+                         handlers=[logging.FileHandler("bot_activity.log", encoding='utf-8'),
                          logging.StreamHandler()])
 logger = logging.getLogger()
 
@@ -132,12 +132,19 @@ def get_unread_DMs(user):
                     else:
                         # Only process and save messages from other users
                         if last_seen != first_message:
-                            new_messages[thread_id] = first_message
-                            save_new_messages(new_messages)
-                            print(f"New messages: {new_messages}\n")
+                            # Pass both the current message and the history for context
+                            new_messages[thread_id] = {
+                                "current": first_message,
+                                "history": messages # threads_dict[thread_id]
+                            }
+                            save_new_messages({thread_id: first_message}) # Save just the latest message for tracking
+                            print(f"New messages detected: {first_message['text']}\n")
                             logger.info(f"New message detected from user {sender_id} in thread {thread_id}")
-                            # Move process_text inside this block so it only processes non-bot messages
+                            
+                            # Process only this specific thread with context
                             process_text(new_messages, user)
+                            # Clear new_messages to avoid re-processing in the loop
+                            new_messages = {}
                         else:
                             logger.info(f"No new message detected from user {sender_id} in thread {thread_id}")
         save_entire_DMs(threads_dict)

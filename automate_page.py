@@ -42,7 +42,7 @@ logging.basicConfig(
     level=logging.INFO, 
     format='%(asctime)s - %(levelname)s - %(message)s', 
     handlers=[
-        logging.FileHandler("bot_activity.log"),
+        logging.FileHandler("bot_activity.log", encoding='utf-8'),
         logging.StreamHandler()
     ]
 )
@@ -145,8 +145,8 @@ def main():
             elif random_val < 0.1: # Another 5% chance to check for stories
                 process_stories(user)
 
-            # 3. Wait for exactly 30 seconds before next check
-            wait_seconds = 30
+            # 3. Wait for exactly 10 seconds before next check
+            wait_seconds = 10
             logger.info(f"Task completed. Sleeping for {wait_seconds} seconds before next check.")
             time.sleep(wait_seconds)
 
